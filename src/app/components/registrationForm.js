@@ -1,23 +1,12 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Form, Input, Button, Row, Col} from 'antd';
+import {Form, Button, Row, Col} from 'antd';
 import { Field, reduxForm } from 'redux-form';
+import FormField from './formField';
 
 const FormItem = Form.Item;
 
 class RegistrationForm extends Component {
-  renderField = ({input, label, type, meta: { touched, error, warning }}) => {
-
-    return(
-        <FormItem
-          label={label}
-          validateStatus={(touched && ((error && "error") || (warning && "warning"))) || ""}
-          help={touched && error|| warning }
-        >
-          <Input {...input} placeholder={label} type={type} />
-        </FormItem>
-    )
-  };
   render() {
     const { handleSubmit, pristine, reset, submitting, onSubmit } = this.props;
 
@@ -29,25 +18,25 @@ class RegistrationForm extends Component {
               <Field
                 name="name"
                 type="text"
-                component={this.renderField}
+                component={FormField}
                 label="Username"
               />
               <Field
                 name="surname"
                 type="text"
-                component={this.renderField}
+                component={FormField}
                 label="Second name"
               />
               <Field
                 name="email"
                 type="email"
-                component={this.renderField}
+                component={FormField}
                 label="Email"
               />
               <Field
                 name="password"
                 type="password"
-                component={this.renderField}
+                component={FormField}
                 label="Password"
               />
               <FormItem>
