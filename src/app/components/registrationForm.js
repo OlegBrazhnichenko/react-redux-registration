@@ -22,7 +22,9 @@ class RegistrationForm extends Component {
         }
       });
   }
+
   renderField = ({input, label, type, meta: { touched, error, warning }}) => {
+    console.log(error);
     return(
         <FormItem
           label={label}
@@ -87,12 +89,36 @@ class RegistrationForm extends Component {
   }
 }
 
+console.log(RegistrationForm.validate);
 RegistrationForm.propTypes = {
   actions: PropTypes.object
 };
 
 RegistrationForm = reduxForm({
-  form: 'RegistrationForm'
+  form: 'RegistrationForm',
+  validate: values => {
+    console.log(values);
+    const errors = {};
+    if (values.name && values.name.length > 15) {
+      errors.name = 'Must be 15 characters or less'
+    } else if( !/^[a-z ,.'-]+$/i.test(values.name)){
+      errors.name = 'Name must contain only a-z , . - or \' characters.'
+    }
+
+    if( values.surname && !/^[a-z ,.'-]+$/i.test(values.surname)){
+      errors.surname = 'Second name must contain only a-z , . - or \' characters.'
+    }
+
+    console.log(errors);
+    return errors
+  },
+  warn: values => {
+    const warnings = {};
+    if(values.password && values.password < 8){
+      warnings.password = 'Password not to strong.'
+    }
+    return warnings
+  }
 })(RegistrationForm);
 
 export default RegistrationForm;
