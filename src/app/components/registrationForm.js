@@ -1,14 +1,15 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Form, Button, Row, Col} from 'antd';
-import { Field, reduxForm } from 'redux-form';
+import {Field, reduxForm} from 'redux-form';
 import FormField from './formField';
+import * as validation from '../services/validation';
 
 const FormItem = Form.Item;
 
 class RegistrationForm extends Component {
   render() {
-    const { handleSubmit, pristine, reset, submitting, onSubmit } = this.props;
+    const {handleSubmit, pristine, reset, submitting, onSubmit} = this.props;
 
     return (
       <div className="container">
@@ -20,24 +21,28 @@ class RegistrationForm extends Component {
                 type="text"
                 component={FormField}
                 label="Username"
+                validate={validation.name}
               />
               <Field
                 name="surname"
                 type="text"
                 component={FormField}
                 label="Second name"
+                validate={validation.surname}
               />
               <Field
                 name="email"
                 type="email"
                 component={FormField}
                 label="Email"
+                validate={validation.email}
               />
               <Field
                 name="password"
                 type="password"
                 component={FormField}
                 label="Password"
+                warn={validation.shortPassword}
               />
               <FormItem>
                 <Row>
@@ -67,29 +72,7 @@ RegistrationForm.propTypes = {
 };
 
 RegistrationForm = reduxForm({
-  form: 'RegistrationForm',
-  validate: values => {
-    const errors = {};
-    if (values.name && values.name.length > 15) {
-      errors.name = 'Must be 15 characters or less'
-    } else if( !/^[a-z ,.'-]+$/i.test(values.name)){
-      errors.name = 'Name must contain only a-z , . - or \' characters.'
-    }
-
-    if( values.surname && !/^[a-z ,.'-]+$/i.test(values.surname)){
-      errors.surname = 'Second name must contain only a-z , . - or \' characters.'
-    }
-
-    return errors
-  },
-  warn: values => {
-    const warnings = {};
-    if(values.password && values.password < 8){
-      warnings.password = 'Password not to strong.'
-    }
-
-    return warnings
-  }
+  form: 'RegistrationForm'
 })(RegistrationForm);
 
 export default RegistrationForm;
