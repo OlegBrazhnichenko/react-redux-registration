@@ -2,29 +2,12 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Form, Input, Button, Row, Col} from 'antd';
 import { Field, reduxForm } from 'redux-form';
-import {SubmissionError} from 'redux-form'
 
 const FormItem = Form.Item;
 
 class RegistrationForm extends Component {
-  constructor(props, context) {
-    super(props, context);
-    this.handleRegistrationRequest = this.handleRegistrationRequest.bind(this);
-  }
-  handleRegistrationRequest(value) {
-    return this.props.actions.register(value)
-      .then(() => {
-        console.log("register success");
-      })
-      .catch((response) => {
-        if(response.error.response.data.errors){
-          throw new SubmissionError(response.error.response.data.errors)
-        }
-      });
-  }
-
   renderField = ({input, label, type, meta: { touched, error, warning }}) => {
-    console.log(error);
+
     return(
         <FormItem
           label={label}
@@ -35,12 +18,12 @@ class RegistrationForm extends Component {
         </FormItem>
     )
   };
-
   render() {
-    const { handleSubmit, pristine, reset, submitting } = this.props;
+    const { handleSubmit, pristine, reset, submitting, onSubmit } = this.props;
+
     return (
       <div className="container">
-        <Form onSubmit={handleSubmit(this.handleRegistrationRequest)} className="form-container">
+        <Form onSubmit={handleSubmit(onSubmit)} className="form-container">
           <Row>
             <Col span={20} offset={2}>
               <Field
@@ -89,15 +72,14 @@ class RegistrationForm extends Component {
   }
 }
 
-console.log(RegistrationForm.validate);
 RegistrationForm.propTypes = {
-  actions: PropTypes.object
+  actions: PropTypes.object,
+  onSubmit: PropTypes.func
 };
 
 RegistrationForm = reduxForm({
   form: 'RegistrationForm',
   validate: values => {
-    console.log(values);
     const errors = {};
     if (values.name && values.name.length > 15) {
       errors.name = 'Must be 15 characters or less'
@@ -109,7 +91,6 @@ RegistrationForm = reduxForm({
       errors.surname = 'Second name must contain only a-z , . - or \' characters.'
     }
 
-    console.log(errors);
     return errors
   },
   warn: values => {
@@ -117,6 +98,7 @@ RegistrationForm = reduxForm({
     if(values.password && values.password < 8){
       warnings.password = 'Password not to strong.'
     }
+
     return warnings
   }
 })(RegistrationForm);
